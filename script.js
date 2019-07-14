@@ -1,8 +1,7 @@
-// Zmienne globalne
 let $list;
 let $addTodo;
 let $myInput;
-
+let id = 1;
 
 const initialList = ['ToDo1', 'ToDo2', 'ToDo3'];
 
@@ -13,87 +12,56 @@ function main() {
 }
 
 function prepareDOMElements() {
-    //przygotowanie- wyszukanie elementów w drzewie DOM
-    $list = document.getElementById('list'); //wyszukanie listy
-    $addTodo = document.getElementById('addTodo'); //wyszukanie elementów w drzewie DOM - przycisk addToDo
-    $myInput = document.getElementById('myInput'); //wyszukanie elementów w drzewie DOM - co wpisane do myInput
+    $list = document.getElementById('list');
+    $addTodo = document.getElementById('addTodo');
+    $myInput = document.getElementById('myInput');
 }
 
 function prepareDOMEvents() {
-    //przygotowanie listenerów
-    $addTodo.addEventListener('click', addButtonClickHandler); //na klik doda nowy elememt do poczatkowej listy Initial List
+    $addTodo.addEventListener('click', addButtonClickHandler); //na klik doda nowy elememt do listy
+    $list.addEventListener('click', listClickManager); //sprawdź co kliknęliśmy
 }
 
 function prepareInitialList() {
-    //wrzucenie poczatkowych elementów do listy (done by MSK)
+    //wrzucenie poczatkowych elementów do listy
     initialList.forEach(todo => {
-        addNewElementToList(todo);
+        addNewElementToList(todo, id);
+        id++;
     });
+   
 }
 
 function addButtonClickHandler() {
-    //dodaje do lity wartośc z pola Input, jeżeli niepuste (done)
+    //dodaje do lity wartośc z pola Input, jeżeli niepuste
     if ($myInput.value !== "") {
-        addNewElementToList($myInput.value);
+        addNewElementToList($myInput.value, id);
     }
 }
 
-
-function addNewElementToList(title   /* Title, author, id */) {
-    //obsługa dodawanie elementów do listy
-    // $list.appendChild(createElement('nowy', 2))
-    const newElement = createElement(title);
+function addNewElementToList(title, id) {
+    const newElement = createElement(title, id);
     $list.appendChild(newElement);
 }
 
-function createElement(title /* Title, author, id */) {
-    // Tworzyc reprezentacje DOM elementu return newElement
-    // return newElement
+function createElement(title , id) {
     const newElement = document.createElement('li');
-    newElement.innerText = title;
-
+    newElement.innerHTML = '<div id="'+ id + '">' + title + 
+    '<span id="deleteTodo" class="delete"> Delete </span>' +
+    '<span id="editTodo" class="edit"> Edit </span>' +
+    '<span id="doneTodo" class="done"> Done </span>' +
+    '</div>';
     return newElement;
 }
 
-function listClickManager(/* event- event.target */) {
-    // Rozstrzygnięcie co dokładnie zostało kliknięte i wywołanie odpowiedniej funkcji
-    // event.target.parentElement.id
-    // if(event.target.className === 'edit') { editListElement(id) }
-}
-
-function removeListElement(/* id */) {
-    // Usuwanie elementu z listy
-}
-
-function editListElement(/* id */) {
-    // Pobranie informacji na temat zadania
-    // Umieść dane w popupie
-}
-
-function addDataToPopup(/* Title, author, id */) {
-    // umieść informacje w odpowiednim miejscu w popupie
-}
-
-function acceptChangeHandler() {
-    // pobierz dane na temat zadania z popupu (id, nowyTitle, nowyColor ...)
-    // Następnie zmodyfikuj element listy wrzucając w niego nowyTitle, nowyColor...
-    // closePopup()
-}
-
-function openPopup() {
-    // Otwórz popup
-}
-
-function closePopup() {
-    // Zamknij popup
-}
-
-function declineChanges() { //niepotrzebna raczej
-    // closePopup()
-}
-
-function markElementAsDone(/* id */) {
-    //zaznacz element jako wykonany (podmień klasę CSS)
+function listClickManager(event) {
+    // sprawdza co zostało klikniete (robocze)
+    if (event.target.className === 'done') {
+        console.log('done');
+    } else if (event.target.className === 'edit') {
+        console.log('edit');
+    } else if (event.target.className === 'delete') {
+        console.log('delete');
+    } else console.log(event.target.id);
 }
 
 document.addEventListener('DOMContentLoaded', main);
