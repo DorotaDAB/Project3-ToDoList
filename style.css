@@ -1,0 +1,62 @@
+body {
+    margin: 0 auto;
+    min-width: 250px;
+  }
+  
+ .addBtn {
+   cursor: pointer;
+ }
+
+  ul li {
+    cursor: pointer;
+    position: relative;
+    list-style-type: none;
+  }
+
+  ul li:hover {
+    background: #ddd;
+  }
+  
+  ul li div.done span:first-child {
+    text-decoration: line-through;
+  }
+
+  /* When "backed", add a background , back to normal style */
+  ul li div span:first-child {
+    text-decoration: none;
+  }
+
+  .popup {
+    visibility: hidden;
+    position: absolute;
+    /* display: flex;
+    display: inline-block; */
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 100px;
+    z-index: 1;
+    top: 5%;
+    margin: 5%;
+    cursor: pointer;
+  }
+
+  .popup.show {
+    visibility: visible;
+  }
+
+  .popupBtn{
+    vertical-align: middle;
+    width: 50px;
+    border: solid white;
+    color:white;
+  }
+
+  .popup i {
+      display: inline-block;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 30px;
+  }
