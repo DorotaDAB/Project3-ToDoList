@@ -30,12 +30,12 @@ function prepareDOMElements() {
 
 function prepareDOMEvents() {
     $addTodo.addEventListener('click', addButtonClickHandler);
-    $myInput.addEventListener('keypress', enterPushHandler); //dodaje z Input na enter
+    $myInput.addEventListener('keypress', enterPushHandler);
     $list.addEventListener('click', listClickManager);
     $cancelPopup.addEventListener('click', closePopup);
     $closeX.addEventListener('click', closePopup);
     $okPopUp.addEventListener('click', acceptChangeHandler);
-    $popUpInput.addEventListener('keypress', acceptChangeHandlerOnEnter);//dodaje z popup na enter
+    $popUpInput.addEventListener('keypress', acceptChangeHandlerOnEnter);
 }
 
 function prepareInitialList() {
@@ -46,19 +46,18 @@ function prepareInitialList() {
 }
 
 function addButtonClickHandler() {
-    if ($myInput.value !== "") {
+    if ($myInput.value !== '') {
         addNewElementToList($myInput.value, id);
         id++; 
     }
-    $myInput.value = "";
+    $myInput.value = '';
 }
 
 function enterPushHandler() {
-    //dodaje z input po nacisnięciu enter
-    if ($myInput.value !== "" && event.keyCode === 13) {
+    if ($myInput.value !== '' && event.keyCode === 13) {
         addNewElementToList($myInput.value, id);
         id++;
-        $myInput.value = "";   
+        $myInput.value = '';   
     }
 }
 
@@ -71,49 +70,37 @@ function createElement(title , id) {
     const newElement = document.createElement('li');
     newElement.setAttribute('id', id);
     newElement.innerHTML = '<div>' + 
-    '<span id="titleToDo">' + title + '</span>' +
-    '<span id="deleteTodo" class="deleteBtn"> Delete </span>' +
-    '<span id="editTodo" class="editBtn"> Edit </span>' +
-    '<span id="statusTodo" class="doneBtn"> Done </span>' +
+    '<span>' + title + '</span>' +
+    '<span class="deleteBtn"> Delete </span>' +
+    '<span class="editBtn"> Edit </span>' +
+    '<span class="doneBtn"> Done </span>' +
     '</div>';
     return newElement;
 }
 
 function listClickManager(event) {
-    let selectedId;
-    selectedId = event.target.parentElement.parentElement.id;
+    let selectedId = event.target.parentElement.parentElement.id;
     editedElement = event.target.parentElement.parentElement;
     if (event.target.className === 'doneBtn') {
-        markElementAsDone(selectedId);
+        toggleStatus(event);
     } else if (event.target.className === 'editBtn' && event.target.parentElement.className !== 'done') {
-        // nie edytuje jak done
         openPopup(selectedId);
     } else if (event.target.className === 'deleteBtn') {
         removeListElement(selectedId);
-    } else if (event.target.className === 'doneBtn back') {
-        markElementAsNotDone(selectedId); 
-    }
+    } 
 }
 
 function removeListElement(selectedId) {
     document.getElementById(selectedId).remove();
 }
 
-function markElementAsDone(selectedId) {
-    //zmienia status na "done" i zmienia Btn na Back (powala na powrót do pierowtnego stanu)
-    changeStatusTodoClassesToggler(event.target);
-    event.target.innerText = "Back";
-}
-
-function markElementAsNotDone(selectedId) {
-    //task wraca jako niezrobiony
-    changeStatusTodoClassesToggler(event.target);
-    event.target.innerText = "Done";
-}
-
-function changeStatusTodoClassesToggler(toDoElement) {
-    toDoElement.parentElement.classList.toggle('done');
-    toDoElement.classList.toggle('back');
+function toggleStatus(ev) {
+    ev.target.parentElement.classList.toggle('done');
+    if (ev.target.parentElement.className === 'done') {
+        ev.target.innerText = 'Back';
+    } else {
+        ev.target.innerText = 'Done';
+    }
 }
 
 function openPopup(selectedId) {
@@ -132,16 +119,19 @@ function addDataToPopup(selectedId) {
 }
 
 function acceptChangeHandler(id) {
-    editedElement.querySelector('span').innerText = $popUpInput.value;
+    if ($popUpInput.value !== '') {
+        editedElement.querySelector('span').innerText = $popUpInput.value; 
+    }
     closePopup();
 }
 
 function acceptChangeHandlerOnEnter(id) {
-    //edytuje po naciśnięciu enter
     if (event.keyCode === 13) {
-        editedElement.querySelector('span').innerText = $popUpInput.value;
-        closePopup();
-    }
+        if ($popUpInput.value !== '') {
+            editedElement.querySelector('span').innerText = $popUpInput.value;
+        }
+    closePopup();
+    } 
 }
 
 document.addEventListener('DOMContentLoaded', main);

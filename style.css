@@ -21,7 +21,10 @@ body {
     text-decoration: line-through;
   }
 
-  /* When "backed", add a background , back to normal style */
+  ul li div.done span:nth-child(3) {
+    color: gray;
+  }
+
   ul li div span:first-child {
     text-decoration: none;
   }
