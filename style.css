@@ -1,65 +1,154 @@
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-    margin: 0 auto;
-    min-width: 250px;
-  }
-  
- .addBtn {
-   cursor: pointer;
- }
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  background-image: url(https://lapolly.files.wordpress.com/2015/06/9dae6d58d9dd992d288c1d4377f34470.jpg);
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  color: #555;
+}
 
-  ul li {
-    cursor: pointer;
-    position: relative;
-    list-style-type: none;
-  }
+.container { 
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 100vh;
+  align-items: center;
+  background-color: #fff;
+}
 
-  ul li:hover {
-    background: #ddd;
-  }
-  
-  ul li div.done span:first-child {
-    text-decoration: line-through;
-  }
+.header {
+  margin-bottom: 5%;
+  width: 80%;
+  text-align: center;
+}
 
-  ul li div.done span:nth-child(3) {
-    color: gray;
-  }
+.header h2 {
+  font-family: 'Pattaya', sans-serif;
+  font-size: 40px;
+}
 
-  ul li div span:first-child {
-    text-decoration: none;
-  }
+.myListInput {
+  display: flex;
+  align-items: center;
+}
 
-  .popup {
-    visibility: hidden;
-    position: absolute;
-    /* display: flex;
-    display: inline-block; */
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 100px;
-    z-index: 1;
-    top: 5%;
-    margin: 5%;
-    cursor: pointer;
-  }
+#addForm input {
+  text-align: center;
+  border-bottom: dotted gray 2px;
+  border-top: none;
+  border-left: none; 
+  border-right: none;
+  width: 85%;
+  padding: 10px;
+  font-size: 16px;
+}
 
-  .popup.show {
-    visibility: visible;
-  }
+.addBtn {
+  margin-left: 1%;
+  padding: 5px;
+  width: 14%;
+  background: #d9d9d9;
+  border-radius: 10%;
+  cursor: pointer;
+}
 
-  .popupBtn{
-    vertical-align: middle;
-    width: 50px;
-    border: solid white;
-    color:white;
-  }
+ul {
+  margin: 0;
+  padding: 0;
+  width: 80%;
+}
 
-  .popup i {
-      display: inline-block;
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 30px;
-  }
+ul li {
+  list-style-type: none;
+  cursor: pointer;
+}
+
+.task:hover {
+  background:   #F5F5F5;
+}
+
+ul li div {
+  display: flex;
+  margin-bottom: 5px;
+  height: 25px;
+} 
+
+ul li div .task {
+  width: 53%;
+  border-bottom: dotted gray 2px;
+  border-top: none;
+  border-left: none; 
+  border-right: none;
+}
+
+ul li div.done .task {
+  text-decoration: line-through;
+}
+
+.btn {
+  margin-left: 1%;
+  padding: 3px;
+  width: 15%;
+  text-align: center;
+  background: #d9d9d9;
+  border-radius: 10%;
+}
+
+ul li div.done .editBtn {
+  color: gray;
+}
+
+.popup {
+  visibility: hidden;
+  position: absolute;
+  top: 5%;
+  margin: 5%;
+  padding-top: 10%;
+  padding-bottom: 10%;
+  width: 60%;
+  text-align: center;
+  border-radius: 6px;
+  z-index: 1;
+  background-color:#808080;
+  color: #fff;
+  cursor: pointer;
+}
+
+.popup.show {
+  visibility: visible;
+}
+
+.popupBtn {
+  margin-left: 1%;
+  background: #d9d9d9;
+  color: #555;
+  border-radius: 10%;
+}
+
+.popup i {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 15px;
+}
+
+#popUpInput{
+  padding:  5px;
+}
+
+#okPopUp {
+  padding: 5px 15px 5px 15px;
+}
+
+#cancelPopup {
+  padding: 5px 5px 5px 5px;
+}

@@ -70,10 +70,10 @@ function createElement(title , id) {
     const newElement = document.createElement('li');
     newElement.setAttribute('id', id);
     newElement.innerHTML = '<div>' + 
-    '<span>' + title + '</span>' +
-    '<span class="deleteBtn"> Delete </span>' +
-    '<span class="editBtn"> Edit </span>' +
-    '<span class="doneBtn"> Done </span>' +
+    '<span class="task">' + title + '</span>' + 
+    '<span class="btn deleteBtn"> Delete </span>' +
+    '<span class="btn editBtn"> Edit </span>' +
+    '<span class="btn doneBtn"> Done </span>' +
     '</div>';
     return newElement;
 }
@@ -81,11 +81,11 @@ function createElement(title , id) {
 function listClickManager(event) {
     let selectedId = event.target.parentElement.parentElement.id;
     editedElement = event.target.parentElement.parentElement;
-    if (event.target.className === 'doneBtn') {
+    if (event.target.className === 'btn doneBtn') {
         toggleStatus(event);
-    } else if (event.target.className === 'editBtn' && event.target.parentElement.className !== 'done') {
+    } else if (event.target.className === 'btn editBtn' && event.target.parentElement.className !== 'done') {
         openPopup(selectedId);
-    } else if (event.target.className === 'deleteBtn') {
+    } else if (event.target.className === 'btn deleteBtn') {
         removeListElement(selectedId);
     } 
 }
@@ -118,18 +118,14 @@ function addDataToPopup(selectedId) {
     $popUpInput.value = editedText;
 }
 
-function acceptChangeHandler(id) {
-    if ($popUpInput.value !== '') {
-        editedElement.querySelector('span').innerText = $popUpInput.value; 
-    }
+function acceptChangeHandler() {
+    editedElement.querySelector('span').innerText = $popUpInput.value; 
     closePopup();
 }
 
-function acceptChangeHandlerOnEnter(id) {
+function acceptChangeHandlerOnEnter() {
     if (event.keyCode === 13) {
-        if ($popUpInput.value !== '') {
-            editedElement.querySelector('span').innerText = $popUpInput.value;
-        }
+    editedElement.querySelector('span').innerText = $popUpInput.value;
     closePopup();
     } 
 }
