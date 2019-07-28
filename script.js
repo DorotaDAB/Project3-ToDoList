@@ -1,7 +1,6 @@
 let $list;
 let $addTodo;
 let $myInput;
-let id = 1;
 let $cancelPopup;
 let $closeX;
 let $popUpInput;
@@ -9,11 +8,9 @@ let $okPopUp;
 let editedElement;
 let popup;
 
-const initialList = ['Task1', 'Task2', 'Task3'];
-
 function main() {
     prepareDOMElements();
-    prepareInitialList();
+    displayList()
     prepareDOMEvents();
 }
 
@@ -30,51 +27,79 @@ function prepareDOMElements() {
 
 function prepareDOMEvents() {
     $addTodo.addEventListener('click', addButtonClickHandler);
-    $myInput.addEventListener('keypress', enterPushHandler);
+    // $myInput.addEventListener('keypress', enterPushHandler); // to be done
     $list.addEventListener('click', listClickManager);
     $cancelPopup.addEventListener('click', closePopup);
     $closeX.addEventListener('click', closePopup);
     $okPopUp.addEventListener('click', acceptChangeHandler);
-    $popUpInput.addEventListener('keypress', acceptChangeHandlerOnEnter);
+    // $popUpInput.addEventListener('keypress', acceptChangeHandlerOnEnter); // to be done
 }
 
-function prepareInitialList() {
-    initialList.forEach(todo => {
-        addNewElementToList(todo, id);
-        id++;
-    });
+async function displayList() {
+    let response = await axios.get('http://195.181.210.249:3000/todo/'); 
+    response.data.forEach(addTodo);
+    function addTodo(todo) {
+        if (todo.author === 'Dorota') {
+            addNewElementToList(todo.title, todo.id, todo.extra); 
+        }
+   }
 }
 
-function addButtonClickHandler() {
+function refreshList() {
+    clearTodoList();
+    displayList();
+}
+
+function clearTodoList() {
+    let initialLength = $list.childElementCount;
+    for (i = 0; i < initialLength; i++ ) {
+        $list.removeChild($list.childNodes[0]);
+    }
+}
+
+async function addButtonClickHandler(todo) {
     if ($myInput.value !== '') {
-        addNewElementToList($myInput.value, id);
-        id++; 
+        let response = await axios.post('http://195.181.210.249:3000/todo/', {
+        title: $myInput.value,
+        author: 'Dorota'
+    });
+    addNewElementToList($myInput.value, todo.id, todo.extra);
+    refreshList();
     }
     $myInput.value = '';
 }
 
-function enterPushHandler() {
-    if ($myInput.value !== '' && event.keyCode === 13) {
-        addNewElementToList($myInput.value, id);
-        id++;
-        $myInput.value = '';   
-    }
-}
+// to be done
+// function enterPushHandler() {
+//     if ($myInput.value !== '' && event.keyCode === 13) {
+//         addNewElementToList($myInput.value, id);
+//         $myInput.value = '';   
+//     }
+// }
 
-function addNewElementToList(title, id) {
-    const newElement = createElement(title, id);
+function addNewElementToList(title, id, extra) {
+    const newElement = createElement(title, id, extra);
     $list.appendChild(newElement);
 }
 
-function createElement(title , id) {
+function createElement(title , id, extra) {
     const newElement = document.createElement('li');
     newElement.setAttribute('id', id);
-    newElement.innerHTML = '<div>' + 
-    '<span class="task">' + title + '</span>' + 
-    '<span class="btn deleteBtn"> Delete </span>' +
-    '<span class="btn editBtn"> Edit </span>' +
-    '<span class="btn doneBtn"> Done </span>' +
-    '</div>';
+    if (extra === 'done') {
+        newElement.innerHTML = '<div class=' + extra + '>' + 
+        '<span class="task">' + title + '</span>' + 
+        '<span class="btn deleteBtn"> Delete </span>' +
+        '<span class="btn editBtn"> Edit </span>' +
+        '<span class="btn doneBtn"> Back </span>' +
+        '</div>';
+    } else  {
+        newElement.innerHTML = '<div class=' + extra + '>' + 
+        '<span class="task">' + title + '</span>' + 
+        '<span class="btn deleteBtn"> Delete </span>' +
+        '<span class="btn editBtn"> Edit </span>' +
+        '<span class="btn doneBtn"> Done </span>' +
+        '</div>';
+    } 
     return newElement;
 }
 
@@ -90,17 +115,30 @@ function listClickManager(event) {
     } 
 }
 
-function removeListElement(selectedId) {
-    document.getElementById(selectedId).remove();
+async function removeListElement(seledtedId) {
+    await axios.delete('http://195.181.210.249:3000/todo/' + seledtedId);
+    refreshList();
 }
 
-function toggleStatus(ev) {
-    ev.target.parentElement.classList.toggle('done');
+async function toggleStatus(ev) {
     if (ev.target.parentElement.className === 'done') {
-        ev.target.innerText = 'Back';
+        await changeTodoStatusForNotDone();
     } else {
-        ev.target.innerText = 'Done';
+        await changeTodoStatusForDone();
     }
+    refreshList();
+}
+
+async function changeTodoStatusForDone() {
+    await axios.put('http://195.181.210.249:3000/todo/' + editedElement.id, {
+        extra: 'done'
+    })
+}
+
+async function changeTodoStatusForNotDone() {
+    await axios.put('http://195.181.210.249:3000/todo/' + editedElement.id, {
+        extra: 'notDone',
+    })
 }
 
 function openPopup(selectedId) {
@@ -108,7 +146,7 @@ function openPopup(selectedId) {
     addDataToPopup(selectedId);
 }
 
-function closePopup(selectedId) {
+function closePopup() {
     popup.classList.remove('show'); 
 }
 
@@ -118,16 +156,20 @@ function addDataToPopup(selectedId) {
     $popUpInput.value = editedText;
 }
 
-function acceptChangeHandler() {
-    editedElement.querySelector('span').innerText = $popUpInput.value; 
+async function acceptChangeHandler() {
+    await axios.put('http://195.181.210.249:3000/todo/' + editedElement.id, {
+                title: $popUpInput.value,
+        });
+    refreshList();
     closePopup();
 }
 
-function acceptChangeHandlerOnEnter() {
-    if (event.keyCode === 13) {
-    editedElement.querySelector('span').innerText = $popUpInput.value;
-    closePopup();
-    } 
-}
+// to be done
+// function acceptChangeHandlerOnEnter() {
+//     if (event.keyCode === 13) {
+//     editedElement.querySelector('span').innerText = $popUpInput.value;
+//     closePopup();
+//     } 
+// }
 
 document.addEventListener('DOMContentLoaded', main);
