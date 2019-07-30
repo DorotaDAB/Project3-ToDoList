@@ -27,12 +27,12 @@ function prepareDOMElements() {
 
 function prepareDOMEvents() {
     $addTodo.addEventListener('click', addButtonClickHandler);
-    // $myInput.addEventListener('keypress', enterPushHandler); // to be done
+    $myInput.addEventListener('keypress', enterPushHandler);
     $list.addEventListener('click', listClickManager);
     $cancelPopup.addEventListener('click', closePopup);
     $closeX.addEventListener('click', closePopup);
     $okPopUp.addEventListener('click', acceptChangeHandler);
-    // $popUpInput.addEventListener('keypress', acceptChangeHandlerOnEnter); // to be done
+    $popUpInput.addEventListener('keypress', acceptChangeHandlerOnEnter);
 }
 
 async function displayList() {
@@ -42,7 +42,7 @@ async function displayList() {
         if (todo.author === 'Dorota') {
             addNewElementToList(todo.title, todo.id, todo.extra); 
         }
-   }
+    }
 }
 
 function refreshList() {
@@ -61,7 +61,8 @@ async function addButtonClickHandler(todo) {
     if ($myInput.value !== '') {
         let response = await axios.post('http://195.181.210.249:3000/todo/', {
         title: $myInput.value,
-        author: 'Dorota'
+        author: 'Dorota',
+        extra: 'notDone'
     });
     addNewElementToList($myInput.value, todo.id, todo.extra);
     refreshList();
@@ -69,13 +70,18 @@ async function addButtonClickHandler(todo) {
     $myInput.value = '';
 }
 
-// to be done
-// function enterPushHandler() {
-//     if ($myInput.value !== '' && event.keyCode === 13) {
-//         addNewElementToList($myInput.value, id);
-//         $myInput.value = '';   
-//     }
-// }
+async function enterPushHandler(todo) {
+    if ($myInput.value !== '' && event.keyCode === 13) {
+        let response = await axios.post('http://195.181.210.249:3000/todo/', {
+        title: $myInput.value,
+        author: 'Dorota',
+        extra: 'notDone'
+    });
+        addNewElementToList($myInput.value, todo.id, todo.extra);
+        refreshList();
+        $myInput.value = '';   
+    }
+}
 
 function addNewElementToList(title, id, extra) {
     const newElement = createElement(title, id, extra);
@@ -92,7 +98,7 @@ function createElement(title , id, extra) {
         '<span class="btn editBtn"> Edit </span>' +
         '<span class="btn doneBtn"> Back </span>' +
         '</div>';
-    } else  {
+    } else {
         newElement.innerHTML = '<div class=' + extra + '>' + 
         '<span class="task">' + title + '</span>' + 
         '<span class="btn deleteBtn"> Delete </span>' +
@@ -122,22 +128,16 @@ async function removeListElement(seledtedId) {
 
 async function toggleStatus(ev) {
     if (ev.target.parentElement.className === 'done') {
-        await changeTodoStatusForNotDone();
+        await changeTodoStatus('notDone');
     } else {
-        await changeTodoStatusForDone();
+        await changeTodoStatus('done');
     }
     refreshList();
 }
 
-async function changeTodoStatusForDone() {
+async function changeTodoStatus(todoStatus) {
     await axios.put('http://195.181.210.249:3000/todo/' + editedElement.id, {
-        extra: 'done'
-    })
-}
-
-async function changeTodoStatusForNotDone() {
-    await axios.put('http://195.181.210.249:3000/todo/' + editedElement.id, {
-        extra: 'notDone',
+        extra: todoStatus
     })
 }
 
@@ -158,18 +158,21 @@ function addDataToPopup(selectedId) {
 
 async function acceptChangeHandler() {
     await axios.put('http://195.181.210.249:3000/todo/' + editedElement.id, {
-                title: $popUpInput.value,
+                title: $popUpInput.value
         });
     refreshList();
     closePopup();
 }
 
-// to be done
-// function acceptChangeHandlerOnEnter() {
-//     if (event.keyCode === 13) {
-//     editedElement.querySelector('span').innerText = $popUpInput.value;
-//     closePopup();
-//     } 
-// }
+async function acceptChangeHandlerOnEnter() {
+    if (event.keyCode === 13) {
+        await axios.put('http://195.181.210.249:3000/todo/' + editedElement.id, {
+                title: $popUpInput.value
+        });
+    editedElement.querySelector('span').innerText = $popUpInput.value;
+    refreshList();
+    closePopup();
+    } 
+}
 
 document.addEventListener('DOMContentLoaded', main);
