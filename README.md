@@ -13,3 +13,5 @@ This is a web application project allowing to store information on planned actio
 * To-dos prioritization
 * To-dos description and/or sub-to-dos
 * ...
+
+![image](./readme-graphics/to-do-list.png)
